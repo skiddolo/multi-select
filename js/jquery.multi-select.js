@@ -50,6 +50,10 @@
         if (that.options.selectableHeader){
           that.$selectableContainer.append(that.options.selectableHeader);
         }
+        that.maxOption = null;
+        if (that.options.maxOption){
+          that.maxOption = that.options.maxOption;
+        }
         that.$selectableContainer.append(that.$selectableUl);
         if (that.options.selectableFooter){
           that.$selectableContainer.append(that.options.selectableFooter);
@@ -183,7 +187,6 @@
           var $option = $('<option value="'+option.value+'">'+option.text+'</option>'),
               index = parseInt((typeof option.index === 'undefined' ? that.$element.children().length : option.index)),
               $container = option.nested === undefined ? that.$element : $("optgroup[label='"+option.nested+"']");
-
           $option.insertAt(index, $container);
           that.generateLisFromOption($option.get(0), index, option.nested);
         }
@@ -347,7 +350,6 @@
 
     'select' : function(value, method){
       if (typeof value === 'string'){ value = [value]; }
-
       var that = this,
           ms = this.$element,
           msIds = $.map(value, function(val){ return(that.sanitize(val)); }),
@@ -355,11 +357,11 @@
           selections = this.$selectionUl.find('#' + msIds.join('-selection, #') + '-selection').filter(':not(.'+that.options.disabledClass+')'),
           options = ms.find('option:not(:disabled)').filter(function(){ return($.inArray(this.value, value) > -1); });
 
+	  if(that.maxOption && that.maxOption <= $('.ms-selection .ms-selected').length) return;
       if (method === 'init'){
         selectables = this.$selectableUl.find('#' + msIds.join('-selectable, #')+'-selectable'),
         selections = this.$selectionUl.find('#' + msIds.join('-selection, #') + '-selection');
       }
-
       if (selectables.length > 0){
         selectables.addClass('ms-selected').hide();
         selections.addClass('ms-selected').show();
